@@ -22,49 +22,64 @@ struct ContentView: View {
                 }
             }
             HStack{
-                Button(action: {
-                    emojiCount -= 1
-                }, label: {
-                    Text("Remove Card")
-                })
-                
+                //                Button(action: {
+                //                    emojiCount -= 1
+                //               }, label: {
+                //                    Text("Remove Card")
+                //                })
+                remove
                 Spacer()
+                add
                 
-                Button(action: {
-                    emojiCount += 1
-                }, label: {
-                    Text("Add Card")
-                })
             }
+            .font(.largeTitle)
         }
         .padding()
         .foregroundStyle(.orange)
+    }
+    var remove : some View{
+        Button{
+            if emojiCount>1 {
+                emojiCount -= 1
+            }
+        }label: {
+            Image(systemName: "minus.circle")
+        }
+    }
+    var add: some View{
+        Button{
+            if emojiCount < emojis.count {
+                emojiCount += 1
+            }
+        } label: {
+            Image(systemName: "plus.circle")
+        }
     }
 }
 struct CardView:View {
     @State var isFaceup: Bool=true
     var content: String
     var body: some View{
-       ZStack {
-           //var shape:RoundedRectangle = RoundedRectangle(cornerRadius: 20)
-           let shape = RoundedRectangle(cornerRadius: 20)
-           //var shape = Circle();
-           if isFaceup{
+        ZStack {
+            //var shape:RoundedRectangle = RoundedRectangle(cornerRadius: 20)
+            let shape = RoundedRectangle(cornerRadius: 20)
+            //var shape = Circle();
+            if isFaceup{
                 shape.fill(.white)
                 shape.strokeBorder(lineWidth: 3)
                 Text(content).font(.largeTitle)
-           }
-           else {
-               shape
-           }
+            }
+            else {
+                shape
+            }
         }
-       .onTapGesture {
-           isFaceup = !isFaceup
-       }
+        .onTapGesture {
+            isFaceup = !isFaceup
+        }
         
-//     .onTapGesture(perform:{
-//         isFaceup = !isFaceup
-//       })
+        //     .onTapGesture(perform:{
+        //         isFaceup = !isFaceup
+        //       })
     }
 }
 
