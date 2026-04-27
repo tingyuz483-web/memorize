@@ -7,9 +7,23 @@
 
 import Foundation
 
+struct ThemePool<ItemContent> where ItemContent: Equatable {
+    struct Theme {
+        let name: String
+        let color: String
+        let numberOfPairs: Int
+        let items: [ItemContent]
+    }
+    private(set) var themes: [Theme] = []
+    
+    mutating func addTheme(_ theme: Theme) {
+        themes.append(theme)
+    }
+} //new
+
 struct MemoryGame<CardContent> where CardContent: Equatable {
     var cards: [Card]
-    
+    private(set) var score: Int = 0 //new
     init(numberOfPairsOfCards: Int,
          createCardContent: (Int) -> CardContent) {
         cards = []
@@ -22,26 +36,43 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     var lastFaceupIndex: Int?
+    
     mutating func choose(_ card: Card) {
-        if let chosenIndex = index(of: card){
-            if let lastIndex = lastFaceupIndex{
-                if cards[lastIndex].content == cards[chosenIndex].content{
+           
+            if let chosenIndex = index(of: card), !cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched {
+                
+                
+                if let lastIndex = lastFaceupIndex {
+                    
+                   
+                    if cards[lastIndex].content == cards[chosenIndex].content {
                         cards[lastIndex].isMatched = true
                         cards[chosenIndex].isMatched = true
+                        score += 2 // 配對成功 +2 分
+                        
+                    } else {
+                        if cards[chosenIndex].hasBeenSeen { score -= 1 }
+                        if cards[lastIndex].hasBeenSeen { score -= 1 }
+                    }
                     
+                    lastFaceupIndex = nil
+                    
+                   
+                    cards[chosenIndex].hasBeenSeen = true
+                    cards[lastIndex].hasBeenSeen = true
+                    
+                } else {
+                    for i in 0..<cards.count {
+                        cards[i].isFaceUp = false
+                    }
+                    lastFaceupIndex = chosenIndex
                 }
-                lastFaceupIndex = nil
-            }else{
-                for i in 0..<cards.count{
-                    cards[i].isFaceUp = false
-                }
-                lastFaceupIndex = chosenIndex
+                
+          
+                cards[chosenIndex].isFaceUp.toggle()
             }
-            cards[chosenIndex].isFaceUp.toggle()
+            print("cards:\(cards)")
         }
-        print("cards:\(cards)")
-    }
-    
     func index(of card: Card) -> Int? {
         for i in 0..<cards.count {
             if cards[i] == card {
@@ -62,7 +93,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             lhs.content == rhs.content && lhs.isFaceUp == rhs.isFaceUp &&
             lhs.isMatched == rhs.isMatched && lhs.id == rhs.id
         }
-        
+        var hasBeenSeen = false //new
         var isFaceUp: Bool = false
         var isMatched: Bool = false
         var content: CardContent

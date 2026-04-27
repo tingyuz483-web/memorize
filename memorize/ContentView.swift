@@ -12,17 +12,45 @@ struct ContentView: View {
     var viewModel:EmojiMemoryGame
     var body: some View{
         VStack{
-            cardList
-                .animation(.default, value: viewModel.cards)
-            Spacer()
-            Button("Shuffle"){
-                viewModel.shuffle()
+                    // 🌟 新增：頂部的主題名稱與分數
+                    HStack {
+                        Text(viewModel.currentTheme.name)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Text("Score: \(viewModel.score)")
+                            .font(.title)
+                            .fontWeight(.semibold)
+                            // 分數小於 0 用紅色凸顯
+                            .foregroundStyle(viewModel.score < 0 ? .red : .primary)
+                    }
+                    .padding(.horizontal)
+                    
+                    cardList
+                        .animation(.default, value: viewModel.cards)
+                    
+                    Spacer()
+                    
+                    // 🌟 修改：換成要求的新遊戲按鈕 (有圖示 + 文字上下排列)
+                    Button(action: {
+                        viewModel.newGame()
+                    }) {
+                        VStack {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.largeTitle)
+                            Text("New Game")
+                                .font(.headline)
+                        }
+                    }
+                }
+                .padding()
+                // 🌟 修改：讀取 Theme 的顏色，不再寫死 .orange
+                .foregroundStyle(viewModel.themeColor)
             }
-            .font(.largeTitle)
-        }
-        .padding()
-        .foregroundStyle(.orange)
-    }
+    
+    
     var cardList: some View{
         ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0 ){
