@@ -12,7 +12,7 @@ struct ContentView: View {
     var viewModel:EmojiMemoryGame
     var body: some View{
         VStack{
-                    // 🌟 新增：頂部的主題名稱與分數
+                    
                     HStack {
                         Text(viewModel.currentTheme.name)
                             .font(.largeTitle)
@@ -23,7 +23,7 @@ struct ContentView: View {
                         Text("Score: \(viewModel.score)")
                             .font(.title)
                             .fontWeight(.semibold)
-                            // 分數小於 0 用紅色凸顯
+                            
                             .foregroundStyle(viewModel.score < 0 ? .red : .primary)
                     }
                     .padding(.horizontal)
@@ -33,7 +33,7 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    // 🌟 修改：換成要求的新遊戲按鈕 (有圖示 + 文字上下排列)
+               
                     Button(action: {
                         viewModel.newGame()
                     }) {
@@ -46,7 +46,7 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                // 🌟 修改：讀取 Theme 的顏色，不再寫死 .orange
+                
                 .foregroundStyle(viewModel.themeColor)
             }
     
